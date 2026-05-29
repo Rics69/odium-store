@@ -49,10 +49,66 @@
   --radius-4xl: calc(var(--radius) * 2.5);
 }
 
-/* ─── Cyber-noir editorial palette (dark only) ───────────────────────── */
-:root,
+/* ─── Light editorial palette (default) ──────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.985 0.004 250);
+  --foreground: oklch(0.205 0.02 265);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.02 265);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.02 265);
+
+  /* deeper emerald accent — readable on light */
+  --primary: oklch(0.6 0.16 150);
+  --primary-foreground: oklch(0.99 0.01 150);
+
+  --secondary: oklch(0.955 0.006 250);
+  --secondary-foreground: oklch(0.25 0.02 265);
+
+  --muted: oklch(0.955 0.005 250);
+  --muted-foreground: oklch(0.46 0.02 260);
+
+  --accent: oklch(0.6 0.16 150 / 10%);
+  --accent-foreground: oklch(0.205 0.02 265);
+
+  --destructive: oklch(0.58 0.22 25);
+
+  --border: oklch(0.2 0.02 265 / 12%);
+  --input: oklch(0.2 0.02 265 / 16%);
+  --ring: oklch(0.6 0.16 150 / 55%);
+
+  --chart-1: oklch(0.6 0.16 150);
+  --chart-2: oklch(0.6 0.16 240);
+  --chart-3: oklch(0.58 0.2 320);
+  --chart-4: oklch(0.7 0.16 70);
+  --chart-5: oklch(0.55 0.05 260);
+
+  --radius: 0.5rem;
+
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.205 0.02 265);
+  --sidebar-primary: oklch(0.6 0.16 150);
+  --sidebar-primary-foreground: oklch(0.99 0.01 150);
+  --sidebar-accent: oklch(0.955 0.006 250);
+  --sidebar-accent-foreground: oklch(0.205 0.02 265);
+  --sidebar-border: oklch(0.2 0.02 265 / 12%);
+  --sidebar-ring: oklch(0.6 0.16 150 / 55%);
+
+  /* theme-aware decorative tints */
+  --deco-line: oklch(0.2 0.02 265 / 0.06);
+  --deco-dot: oklch(0.2 0.02 265 / 0.05);
+  --deco-hair: oklch(0.2 0.02 265 / 0.14);
+}
+
+/* ─── Cyber-noir editorial palette (dark) ────────────────────────────── */
 .dark {
-  --background: oklch(0.155 0.012 264);
+  color-scheme: dark;
+
+  --background: oklch(0.142 0.011 265);
   --foreground: oklch(0.97 0.005 250);
 
   --card: oklch(0.198 0.014 264);
@@ -86,8 +142,6 @@
   --chart-4: oklch(0.78 0.16 70);
   --chart-5: oklch(0.55 0.05 260);
 
-  --radius: 0.5rem;
-
   --sidebar: oklch(0.198 0.014 264);
   --sidebar-foreground: oklch(0.97 0.005 250);
   --sidebar-primary: oklch(0.88 0.215 138);
@@ -96,11 +150,13 @@
   --sidebar-accent-foreground: oklch(0.97 0.005 250);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.88 0.215 138 / 70%);
+
+  --deco-line: oklch(1 0 0 / 0.04);
+  --deco-dot: oklch(1 0 0 / 0.025);
+  --deco-hair: oklch(1 0 0 / 0.18);
 }
 
-/* Force-dark even when next-themes is hydrating */
 html {
-  color-scheme: dark;
   background: var(--background);
 }
 
@@ -123,8 +179,9 @@ html {
   h2,
   h3,
   h4 {
-    font-family: var(--font-display), var(--font-sans);
-    letter-spacing: -0.02em;
+    font-family: var(--font-display), Georgia, serif;
+    letter-spacing: -0.005em;
+    font-weight: 600;
   }
   /* tabular numbers for prices/stats */
   .tabular-nums,
@@ -135,17 +192,14 @@ html {
 
 /* ─── Background atmosphere ──────────────────────────────────────────── */
 .bg-noise {
-  background-image: radial-gradient(
-    oklch(1 0 0 / 0.04) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(var(--deco-dot) 1px, transparent 1px);
   background-size: 3px 3px;
 }
 
 .bg-grid {
   background-image:
-    linear-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+    linear-gradient(var(--deco-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--deco-line) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(
     ellipse 60% 50% at 50% 30%,
@@ -172,9 +226,17 @@ html {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: radial-gradient(oklch(1 0 0 / 0.025) 1px, transparent 1px);
+  background-image: radial-gradient(var(--deco-dot) 1px, transparent 1px);
   background-size: 4px 4px;
   opacity: 0.45;
+}
+
+/* ─── Adaptive logo (white asset → dark on light theme) ──────────────── */
+.light .logo-adaptive {
+  filter: invert(1) brightness(0.85);
+}
+.dark .logo-adaptive {
+  filter: none;
 }
 
 /* ─── Decorative hairline ────────────────────────────────────────────── */
@@ -182,7 +244,7 @@ html {
   background-image: linear-gradient(
     to right,
     transparent,
-    oklch(1 0 0 / 0.18),
+    var(--deco-hair),
     transparent
   );
 }
@@ -252,4 +314,84 @@ html {
 }
 .odium-fade-up {
   animation: odium-fade-up 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* ─── Hero: rolling text (per-letter roll, center → edges) ───────────── */
+@keyframes odium-roll-in {
+  0% {
+    opacity: 0;
+    transform: translateY(0.85em) rotateX(-75deg);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+.odium-roll {
+  perspective: 640px;
+}
+.odium-roll-char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  animation: odium-roll-in 0.66s cubic-bezier(0.2, 0.75, 0.2, 1) both;
+  will-change: transform, opacity;
+}
+
+/* ─── Hero: drifting service icons (slow chaos) ──────────────────────── */
+@keyframes odium-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(38px, -46px, 0) rotate(16deg); }
+}
+@keyframes odium-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-42px, 34px, 0) rotate(-22deg); }
+}
+@keyframes odium-drift-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(30px, 42px, 0) rotate(13deg); }
+}
+@keyframes odium-drift-4 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-34px, -38px, 0) rotate(-14deg); }
+}
+@keyframes odium-drift-5 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(46px, 22px, 0) rotate(26deg); }
+}
+.odium-drift-1 { animation: odium-drift-1 15s ease-in-out infinite; }
+.odium-drift-2 { animation: odium-drift-2 19s ease-in-out infinite; }
+.odium-drift-3 { animation: odium-drift-3 22s ease-in-out infinite; }
+.odium-drift-4 { animation: odium-drift-4 17s ease-in-out infinite; }
+.odium-drift-5 { animation: odium-drift-5 20s ease-in-out infinite; }
+
+/* ─── Hero: scroll cue bob ───────────────────────────────────────────── */
+@keyframes odium-bob {
+  0%, 100% { transform: translateY(0); opacity: 0.65; }
+  50% { transform: translateY(7px); opacity: 1; }
+}
+.odium-bob {
+  animation: odium-bob 1.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .odium-roll-char,
+  .odium-drift-1,
+  .odium-drift-2,
+  .odium-drift-3,
+  .odium-drift-4,
+  .odium-drift-5,
+  .odium-bob,
+  .odium-marquee,
+  .odium-gem-animate,
+  .odium-fade-up,
+  .odium-pulse-ring {
+    animation: none !important;
+  }
+  .odium-roll-char {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

@@ -7,6 +7,7 @@ import { siteContainerClass } from "@/lib/site-layout";
 import { cn } from "@/lib/utils";
 import { SearchBar } from "@/components/search-bar";
 import { SiteNav } from "@/components/site-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 async function getUser(): Promise<UserMe | null> {
@@ -28,15 +29,14 @@ export async function SiteHeader() {
             className="group inline-flex items-center gap-2.5"
             aria-label="Odium — главная"
           >
-            <span className="relative inline-flex size-9 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/30 transition-colors group-hover:bg-primary/15">
-              <Image
-                src="/logo-odium.svg"
-                alt=""
-                width={26}
-                height={26}
-                priority
-              />
-            </span>
+            <Image
+              src="/logo-odium.svg"
+              alt=""
+              width={32}
+              height={32}
+              priority
+              className="logo-adaptive transition-transform group-hover:scale-105"
+            />
             <span className="flex flex-col leading-none">
               <span className="font-display text-lg font-bold tracking-tight">
                 odium
@@ -51,6 +51,7 @@ export async function SiteHeader() {
         <div className="flex flex-1 flex-col gap-2 md:max-w-lg md:flex-row md:items-center md:justify-end">
           <SearchBar className="w-full md:max-w-sm" />
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             {user ? (
               <>
                 {user.role === "admin" && (

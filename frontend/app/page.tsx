@@ -85,9 +85,20 @@ export default async function Home({
   const gridClass = productGridClass;
 
   return (
-    <div className="space-y-16 md:space-y-20">
-      <HomeHero />
+    <div>
+      {!q ? (
+        <div className="relative -mx-4 -mt-10 sm:-mx-6 md:-mt-14 lg:-mx-10 xl:-mx-16 2xl:-mx-24">
+          <HomeHero />
+        </div>
+      ) : null}
 
+      <div
+        id="catalog"
+        className={cn(
+          "scroll-mt-24 space-y-16 md:space-y-20",
+          !q && "pt-20 md:pt-28"
+        )}
+      >
       {q ? (
         <section className="space-y-6">
           <SectionHeading
@@ -150,6 +161,7 @@ export default async function Home({
           </div>
         </section>
       )}
+      </div>
     </div>
   );
 }

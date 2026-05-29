@@ -10,8 +10,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <CookieConsentProvider>
       <ThemeProvider
         attribute="class"
-        defaultTheme="dark"
-        forcedTheme="dark"
+        defaultTheme="light"
         enableSystem={false}
         disableTransitionOnChange
       >

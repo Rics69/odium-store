@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, JetBrains_Mono, Unbounded } from "next/font/google";
+import { Manrope, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -22,11 +22,12 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
-const unbounded = Unbounded({
+const playfair = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin", "cyrillic"],
   display: "swap",
   weight: ["500", "600", "700", "800"],
+  style: ["normal", "italic"],
 });
 
 const SITE_URL =
@@ -79,8 +80,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f1117",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f8f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1117" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -91,7 +95,7 @@ export default function RootLayout({
   return (
     <html
       lang="ru"
-      className={`${manrope.variable} ${jetbrainsMono.variable} ${unbounded.variable} dark h-full antialiased`}
+      className={`${manrope.variable} ${jetbrainsMono.variable} ${playfair.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans body-aurora">

@@ -26,9 +26,13 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
           <div className="space-y-4">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <span className="relative inline-flex size-9 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/30">
-                <Image src="/logo-odium.svg" alt="" width={26} height={26} />
-              </span>
+              <Image
+                src="/logo-odium.svg"
+                alt=""
+                width={32}
+                height={32}
+                className="logo-adaptive"
+              />
               <span className="font-display text-lg font-bold tracking-tight">odium</span>
             </Link>
             <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
