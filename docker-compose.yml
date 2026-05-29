@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: odium
+      POSTGRES_PASSWORD: odium
+      POSTGRES_DB: odium
+    ports:
+      - "5433:5432"
+    volumes:
+      - odium_pg:/var/lib/postgresql/data
+
+volumes:
+  odium_pg:

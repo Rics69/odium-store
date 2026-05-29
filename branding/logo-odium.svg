@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none" aria-label="Odium">
+  <defs>
+    <linearGradient id="o-top" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#e8f4ff"/>
+      <stop offset="100%" stop-color="#7eb8ff"/>
+    </linearGradient>
+    <linearGradient id="o-left" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4d8eff"/>
+      <stop offset="100%" stop-color="#1a5fd4"/>
+    </linearGradient>
+    <linearGradient id="o-right" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6db0ff"/>
+      <stop offset="100%" stop-color="#2b6ee6"/>
+    </linearGradient>
+    <linearGradient id="o-crown" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#f0f7ff"/>
+      <stop offset="50%" stop-color="#9cc8ff"/>
+      <stop offset="100%" stop-color="#3d7ef0"/>
+    </linearGradient>
+    <filter id="o-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Gem outline -->
+  <g filter="url(#o-glow)">
+    <!-- Crown (top facets) -->
+    <path fill="url(#o-crown)" d="M80 12 34 56h92L80 12Z"/>
+    <path fill="#b8d9ff" opacity="0.85" d="M34 56 22 68h44L34 56Z"/>
+    <path fill="#8bb8f5" opacity="0.9" d="M80 68 34 56l22-12 24 24Z"/>
+    <path fill="#a8ceff" opacity="0.88" d="M80 68 126 56l-22-12-24 24Z"/>
+    <path fill="#6aa0ef" opacity="0.9" d="M126 56 138 68H94l32-12Z"/>
+    <!-- Pavilion (lower body) -->
+    <path fill="url(#o-top)" d="M22 68h116L80 148 22 68Z"/>
+    <path fill="url(#o-left)" d="M22 68 80 148V88L22 68Z"/>
+    <path fill="url(#o-right)" d="M138 68 80 148V88l58-20Z"/>
+    <!-- Table / center highlight -->
+    <path fill="#d6ecff" opacity="0.35" d="M56 68h48L80 96 56 68Z"/>
+    <path fill="#ffffff" opacity="0.2" d="M80 40 66 56h28L80 40Z"/>
+  </g>
+</svg>
