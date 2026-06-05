@@ -19,6 +19,8 @@ from app.models import (
     ProductType,
     User,
 )
+from app.utils.delivery_urls import normalize_delivery_urls
+from app.services.order_number import next_order_number
 from app.services.steam_pricing import calc_steam_checkout
 from app.schemas.order import (
     OrderCreateRequest,
@@ -69,6 +71,7 @@ def _order_read(o: Order) -> OrderRead:
     manual = prod.fulfillment == FulfillmentType.manual
     return OrderRead(
         id=str(o.id),
+        order_number=o.order_number,
         product_id=str(o.product_id),
         product_title=prod.title,
         product_slug=prod.slug,
@@ -150,7 +153,13 @@ async def create_order(
         else OrderStatus.fulfilled
     )
 
+    delivery_urls: list[str] = []
+    if product.fulfillment == FulfillmentType.automated:
+        raw_urls = getattr(product, "automated_delivery_urls", None)
+        delivery_urls = normalize_delivery_urls(raw_urls)
+
     order = Order(
+        order_number=await next_order_number(db),
         user_id=user.id,
         product_id=product.id,
         status=initial_status,
@@ -159,6 +168,7 @@ async def create_order(
         steam_deposit_amount=steam_deposit_amount,
         steam_deposit_currency=steam_deposit_currency,
         post_payment_snapshot=_post_payment_snapshot_from_product(product),
+        automated_delivery_urls=delivery_urls,
     )
     db.add(order)
     await db.flush()
@@ -188,6 +198,7 @@ async def create_order(
 
     await notify_new_order_telegram(
         order_id=order2.id,
+        order_number=order2.order_number,
         product_title=product.title,
         fulfillment_manual=_manual_fulfillment(product),
         user_email=user.email,
@@ -228,7 +239,9 @@ async def get_order_for_success_page(
     manual = order.product.fulfillment == FulfillmentType.manual
     return OrderSuccessRead(
         id=str(order.id),
+        order_number=order.order_number,
         product_title=order.product.title,
+        automated_delivery_urls=normalize_delivery_urls(order.automated_delivery_urls),
         status=order.status.value,
         status_display=order_status_display(order.status, manual),
         post_payment_fields=fields,
@@ -300,6 +313,7 @@ async def submit_post_payment_fields(
 
     await notify_post_payment_submitted(
         order_id=order.id,
+        order_number=order.order_number,
         product_title=order.product.title,
         user_email=user.email,
         fields=telegram_rows,

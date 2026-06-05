@@ -10,6 +10,24 @@ from app.api.v1.products import review_stats_map, to_card
 router = APIRouter(prefix="/home", tags=["home"])
 
 
+@router.get("/section-options")
+async def section_options(db: AsyncSession = Depends(get_db)):
+    sec_stmt = select(HomepageSection).order_by(HomepageSection.sort_order)
+    rows = await db.execute(sec_stmt)
+    sections = rows.scalars().all()
+    return {
+        "sections": [
+            {
+                "id": str(s.id),
+                "title": s.title,
+                "slug": s.slug,
+                "sort_order": s.sort_order,
+            }
+            for s in sections
+        ]
+    }
+
+
 @router.get("/sections")
 async def home_sections(db: AsyncSession = Depends(get_db)):
     sec_stmt = select(HomepageSection).order_by(HomepageSection.sort_order)

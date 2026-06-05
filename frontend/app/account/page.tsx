@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 type OrderRow = {
   id: string;
+  order_number: string;
   product_title: string;
   product_slug: string;
   status: string;

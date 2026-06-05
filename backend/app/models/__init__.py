@@ -68,7 +68,7 @@ class Product(Base):
     old_price: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
     fulfillment: Mapped[FulfillmentType] = mapped_column(default=FulfillmentType.automated)
     product_type: Mapped[ProductType] = mapped_column(default=ProductType.standard)
-    steam_commission_percent: Mapped[float] = mapped_column(Numeric(5, 2), default=20)
+    steam_commission_percent: Mapped[float] = mapped_column(Numeric(5, 2), default=10)
     steam_usd_to_rub: Mapped[float] = mapped_column(Numeric(12, 4), default=92)
     steam_kzt_to_rub: Mapped[float] = mapped_column(Numeric(12, 6), default=0.2)
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -80,6 +80,7 @@ class Product(Base):
     faq_sections: Mapped[list] = mapped_column(JSONB, nullable=False)
     pricing_variants: Mapped[list] = mapped_column(JSONB, nullable=False)
     post_payment_fields: Mapped[list] = mapped_column(JSONB, nullable=False)
+    automated_delivery_urls: Mapped[list] = mapped_column(JSONB, nullable=False, server_default="[]")
 
     images: Mapped[list["ProductImage"]] = relationship(
         back_populates="product",
@@ -138,6 +139,7 @@ class Order(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    order_number: Mapped[str] = mapped_column(String(20), unique=True, index=True)
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
@@ -151,6 +153,7 @@ class Order(Base):
     steam_deposit_currency: Mapped[str | None] = mapped_column(String(10), nullable=True)
     post_payment_snapshot: Mapped[list] = mapped_column(JSONB, nullable=False)
     post_payment_submitted: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    automated_delivery_urls: Mapped[list] = mapped_column(JSONB, nullable=False, server_default="[]")
 
     user: Mapped["User"] = relationship(back_populates="orders")
     product: Mapped["Product"] = relationship(back_populates="orders")

@@ -33,7 +33,7 @@ export function SteamTopupPurchase({
   const [pdConsent, setPdConsent] = useState(false);
   const { canUseCookies } = useCookieConsent();
 
-  const commission = Number(product.steam_commission_percent ?? 20);
+  const commission = Number(product.steam_commission_percent ?? 10);
   const usdToRub = Number(product.steam_usd_to_rub ?? 92);
   const kztToRub = Number(product.steam_kzt_to_rub ?? 0.2);
 
@@ -136,7 +136,7 @@ export function SteamTopupPurchase({
             placeholder={`от ${currencyMeta.min} ${currencyMeta.symbol}`}
           />
           <p className="text-muted-foreground text-xs">
-            Минимум: {currencyMeta.min} {currencyMeta.symbol}. Комиссия сервиса: {commission}%.
+            Минимум: {currencyMeta.min} {currencyMeta.symbol}
           </p>
         </div>
         {payRub != null && payRub > 0 ? (

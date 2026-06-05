@@ -57,13 +57,16 @@ export type ProductDetailT = ProductCardT & {
   faq_sections: AccordionSectionT[];
   pricing_variants: PricingVariantT[];
   post_payment_fields: ProductPostPaymentFieldT[];
+  automated_delivery_urls?: string[];
 };
 
 export type OrderSuccessPayloadT = {
   id: string;
+  order_number: string;
   product_title: string;
   status?: string;
   status_display?: string;
+  automated_delivery_urls?: string[];
   post_payment_fields: ProductPostPaymentFieldT[];
   post_payment_already_submitted?: boolean;
 };

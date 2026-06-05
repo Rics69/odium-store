@@ -18,6 +18,7 @@ from app.schemas.product import (
     ProductInputFieldRead,
     ProductPostPaymentField,
 )
+from app.utils.delivery_urls import normalize_delivery_urls
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -202,6 +203,9 @@ def to_detail(
         faq_sections=faq,
         pricing_variants=pvars,
         post_payment_fields=pp,
+        automated_delivery_urls=normalize_delivery_urls(
+            getattr(p, "automated_delivery_urls", None)
+        ),
     )
 
 
@@ -221,13 +225,37 @@ async def list_products(
     db: AsyncSession = Depends(get_db),
     skip: int = Query(0, ge=0),
     limit: int = Query(24, ge=1, le=100),
+    q: str | None = Query(None, max_length=200),
+    section: str | None = Query(None, max_length=80),
 ):
     stmt = (
         select(Product)
         .where(Product.is_published.is_(True))
         .where(Product.is_active.is_(True))
-        .order_by(Product.title)
-        .offset(skip)
+    )
+
+    query = q.strip() if q else ""
+    if query:
+        stmt = stmt.where(Product.title.ilike(f"%{query}%"))
+
+    section_slug = section.strip() if section else ""
+    if section_slug:
+        sec_row = await db.execute(
+            select(HomepageSection).where(HomepageSection.slug == section_slug)
+        )
+        sec = sec_row.scalar_one_or_none()
+        if not sec:
+            return []
+        stmt = (
+            stmt.join(SectionProduct, SectionProduct.product_id == Product.id)
+            .where(SectionProduct.section_id == sec.id)
+            .order_by(SectionProduct.sort_order)
+        )
+    else:
+        stmt = stmt.order_by(Product.title)
+
+    stmt = (
+        stmt.offset(skip)
         .limit(limit)
         .options(selectinload(Product.images))
     )

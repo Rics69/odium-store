@@ -111,6 +111,7 @@ async def telegram_edit_reply_markup(
 def format_new_order_message(
     *,
     order_id: uuid.UUID,
+    order_number: str,
     product_title: str,
     fulfillment_label: str,
     user_email: str,
@@ -123,7 +124,8 @@ def format_new_order_message(
 ) -> str:
     lines = [
         "🛒 Новый заказ",
-        f"ID заказа: {order_id}",
+        f"Номер заказа: {order_number}",
+        f"ID: {order_id}",
         f"Товар: {_one_line(product_title, 400)}",
         f"Выдача: {fulfillment_label}",
         f"Клиент: {_one_line(user_email, 200)} ({_one_line(user_name, 120)})",
@@ -156,6 +158,7 @@ async def telegram_edit_message_text(
 async def notify_new_order_telegram(
     *,
     order_id: uuid.UUID,
+    order_number: str,
     product_title: str,
     fulfillment_manual: bool,
     user_email: str,
@@ -170,6 +173,7 @@ async def notify_new_order_telegram(
     ful = "Ручная" if fulfillment_manual else "Авто"
     text = format_new_order_message(
         order_id=order_id,
+        order_number=order_number,
         product_title=product_title,
         fulfillment_label=ful,
         user_email=user_email,
@@ -187,13 +191,15 @@ async def notify_new_order_telegram(
 def format_post_payment_message(
     *,
     order_id: uuid.UUID,
+    order_number: str,
     product_title: str,
     user_email: str,
     fields: list[tuple[str, str]],
 ) -> str:
     lines = [
         "📝 Данные после оплаты",
-        f"ID заказа: {order_id}",
+        f"Номер заказа: {order_number}",
+        f"ID: {order_id}",
         f"Товар: {_one_line(product_title, 400)}",
         f"Клиент: {_one_line(user_email, 200)}",
         "",
@@ -207,12 +213,14 @@ def format_post_payment_message(
 async def notify_post_payment_submitted(
     *,
     order_id: uuid.UUID,
+    order_number: str,
     product_title: str,
     user_email: str,
     fields: list[tuple[str, str]],
 ) -> None:
     text = format_post_payment_message(
         order_id=order_id,
+        order_number=order_number,
         product_title=product_title,
         user_email=user_email,
         fields=fields,

@@ -29,6 +29,7 @@ from app.schemas.product import (
     ProductUpdate,
 )
 from app.api.v1.products import review_stats_map, to_detail
+from app.utils.delivery_urls import normalize_delivery_urls
 from app.utils.slug import slugify
 
 router = APIRouter(prefix="/admin/products", tags=["admin-products"])
@@ -165,6 +166,7 @@ async def admin_create(
         faq_sections=_accordion_db_payload(body.faq_sections),
         pricing_variants=_variants_db_payload(body.pricing_variants),
         post_payment_fields=_post_payment_db_payload(body.post_payment_fields),
+        automated_delivery_urls=normalize_delivery_urls(body.automated_delivery_urls),
     )
     db.add(prod)
     await db.flush()
@@ -301,6 +303,8 @@ async def admin_update(
         p.pricing_variants = _variants_db_payload(body.pricing_variants)
     if body.post_payment_fields is not None:
         p.post_payment_fields = _post_payment_db_payload(body.post_payment_fields)
+    if body.automated_delivery_urls is not None:
+        p.automated_delivery_urls = normalize_delivery_urls(body.automated_delivery_urls)
 
     await db.commit()
     stmt = (

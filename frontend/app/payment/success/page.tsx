@@ -51,9 +51,13 @@ function PaymentSuccessContent() {
       if (!data) throw new Error("Пустой ответ сервера");
       const p: OrderSuccessPayloadT = {
         id: String(data.id ?? ""),
+        order_number: String(data.order_number ?? ""),
         product_title: String(data.product_title ?? ""),
         status: data.status ? String(data.status) : undefined,
         status_display: data.status_display ? String(data.status_display) : undefined,
+        automated_delivery_urls: Array.isArray(data.automated_delivery_urls)
+          ? data.automated_delivery_urls.map(String)
+          : [],
         post_payment_fields: Array.isArray(data.post_payment_fields)
           ? (data.post_payment_fields as ProductPostPaymentFieldT[])
           : [],
@@ -163,6 +167,17 @@ function PaymentSuccessContent() {
             </span>
           </p>
         ) : null}
+        {payload?.order_number ? (
+          <p className="text-sm">
+            Номер покупки:{" "}
+            <span className="font-mono font-semibold tracking-wide">{payload.order_number}</span>
+          </p>
+        ) : null}
+        {payload?.order_number ? (
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            При обращении в поддержку укажите этот номер.
+          </p>
+        ) : null}
       </div>
 
       {!orderId ? (
@@ -176,6 +191,37 @@ function PaymentSuccessContent() {
       ) : null}
 
       {orderId && err ? <p className="text-destructive text-sm">{err}</p> : null}
+
+      {orderId && !loading && !err && (payload?.automated_delivery_urls?.length ?? 0) > 0 ? (
+        <div className="w-full space-y-4 rounded-2xl border border-primary/30 bg-primary/5 p-6 text-left">
+          <p className="text-sm font-medium">Ваш товар готов</p>
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            {payload!.automated_delivery_urls!.length === 1
+              ? "Перейдите по ссылке ниже, чтобы получить заказ:"
+              : "Перейдите по ссылкам ниже, чтобы получить заказ:"}
+          </p>
+          <ul className="space-y-3">
+            {payload!.automated_delivery_urls!.map((url, index) => (
+              <li key={`${url}-${index}`} className="space-y-2">
+                <Link
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    buttonVariants(),
+                    "inline-flex w-full break-all text-center sm:w-auto"
+                  )}
+                >
+                  {payload!.automated_delivery_urls!.length > 1
+                    ? `Открыть ссылку ${index + 1}`
+                    : "Открыть ссылку"}
+                </Link>
+                <p className="font-mono text-xs break-all text-muted-foreground">{url}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {orderId && !loading && !err && fields.length > 0 ? (
         <div className="w-full space-y-4 rounded-2xl border bg-card p-6 text-left">

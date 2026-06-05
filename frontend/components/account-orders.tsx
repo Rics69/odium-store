@@ -15,6 +15,7 @@ import {
 
 type OrderRow = {
   id: string;
+  order_number: string;
   product_title: string;
   product_slug: string;
   status: string;
@@ -111,6 +112,7 @@ export function AccountOrders({ initialOrders }: { initialOrders: OrderRow[] }) 
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Номер</TableHead>
             <TableHead>Товар</TableHead>
             <TableHead>Статус</TableHead>
             <TableHead>Тариф</TableHead>
@@ -121,6 +123,9 @@ export function AccountOrders({ initialOrders }: { initialOrders: OrderRow[] }) 
         <TableBody>
           {orders.map((o) => (
             <TableRow key={o.id}>
+              <TableCell className="font-mono text-xs tabular-nums">
+                {o.order_number}
+              </TableCell>
               <TableCell>
                 <Link
                   className="font-medium underline-offset-2 hover:underline"

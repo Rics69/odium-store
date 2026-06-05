@@ -10,6 +10,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { parseDeliveryUrls, formatDeliveryUrls } from "@/lib/delivery-urls";
 import { cn } from "@/lib/utils";
 import {
   draftsFromPostPaymentFields,
@@ -53,8 +54,11 @@ export function EditProductForm({ product }: { product: ProductDetailT }) {
   const [productType, setProductType] = useState<"standard" | "steam_topup">(
     () => product.product_type ?? "standard"
   );
+  const [fulfillment, setFulfillment] = useState<"manual" | "automated">(
+    () => product.fulfillment ?? "automated"
+  );
   const [steamCommission, setSteamCommission] = useState(() =>
-    String(product.steam_commission_percent ?? 20)
+    String(product.steam_commission_percent ?? 10)
   );
   const [steamUsdToRub, setSteamUsdToRub] = useState(() =>
     String(product.steam_usd_to_rub ?? 92)
@@ -97,7 +101,11 @@ export function EditProductForm({ product }: { product: ProductDetailT }) {
     const description = String(fd.get("description") || "");
     const price = Number(fd.get("price"));
     const old_price_raw = String(fd.get("old_price") || "").trim();
-    const fulfillment = String(fd.get("fulfillment"));
+    const fulfillmentValue = String(fd.get("fulfillment"));
+    const automated_delivery_urls =
+      fulfillmentValue === "automated"
+        ? parseDeliveryUrls(String(fd.get("automated_delivery_urls") || ""))
+        : [];
     const is_active = fd.get("is_active") === "on";
     const is_published = fd.get("is_published") === "on";
     const image_urls = String(fd.get("image_urls") || "")
@@ -139,9 +147,10 @@ export function EditProductForm({ product }: { product: ProductDetailT }) {
           description,
           price,
           old_price: old_price_raw ? Number(old_price_raw) : null,
-          fulfillment,
+          fulfillment: fulfillmentValue,
+          automated_delivery_urls,
           product_type: productType,
-          steam_commission_percent: Number(steamCommission) || 20,
+          steam_commission_percent: Number(steamCommission) || 10,
           steam_usd_to_rub: Number(steamUsdToRub) || 92,
           steam_kzt_to_rub: Number(steamKztToRub) || 0.2,
           is_active,
@@ -250,12 +259,29 @@ export function EditProductForm({ product }: { product: ProductDetailT }) {
             id="fulfillment"
             name="fulfillment"
             className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
-            defaultValue={product.fulfillment}
+            value={fulfillment}
+            onChange={(e) => setFulfillment(e.target.value as "manual" | "automated")}
           >
             <option value="automated">Автоматически</option>
             <option value="manual">Ручная (10 мин — 6 ч)</option>
           </select>
         </div>
+        {fulfillment === "automated" ? (
+          <div className="space-y-2">
+            <Label htmlFor="automated_delivery_urls">Ссылки для покупателя после оплаты</Label>
+            <Textarea
+              id="automated_delivery_urls"
+              name="automated_delivery_urls"
+              rows={4}
+              placeholder={"https://example.com/link-1\nhttps://example.com/link-2"}
+              defaultValue={formatDeliveryUrls(product.automated_delivery_urls)}
+            />
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              По одной ссылке в строке. Показываются на странице «Спасибо за покупку» после успешной
+              оплаты автоматического товара.
+            </p>
+          </div>
+        ) : null}
         <div className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-2">
           <input
             type="checkbox"

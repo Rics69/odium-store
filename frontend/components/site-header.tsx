@@ -41,9 +41,6 @@ export async function SiteHeader() {
               <span className="font-display text-lg font-bold tracking-tight">
                 odium
               </span>
-              <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                подписки · пополнения
-              </span>
             </span>
           </Link>
           <SiteNav />

@@ -20,6 +20,7 @@ class OrderCreateRequest(BaseModel):
 
 class OrderRead(BaseModel):
     id: str
+    order_number: str
     product_id: str
     product_title: str
     product_slug: str
@@ -43,7 +44,9 @@ class OrderSuccessRead(BaseModel):
     """Данные для страницы успеха."""
 
     id: str
+    order_number: str
     product_title: str
+    automated_delivery_urls: list[str] = Field(default_factory=list)
     status: str = ""
     status_display: str = ""
     post_payment_fields: list[ProductPostPaymentField] = Field(default_factory=list)

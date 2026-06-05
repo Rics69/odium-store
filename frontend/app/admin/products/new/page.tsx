@@ -16,6 +16,7 @@ import {
 } from "@/components/admin/input-fields-builder";
 import { HomepageSectionsField } from "@/components/admin/homepage-sections-field";
 import { SteamProductFields } from "@/components/admin/steam-product-fields";
+import { parseDeliveryUrls } from "@/lib/delivery-urls";
 import {
   AccordionSectionsField,
   DraftAccordionSection,
@@ -35,7 +36,8 @@ export default function NewProductPage() {
   const [variantDrafts, setVariantDrafts] = useState<DraftPricingVariant[]>([]);
   const [postPayDrafts, setPostPayDrafts] = useState<DraftInputField[]>([]);
   const [productType, setProductType] = useState<"standard" | "steam_topup">("standard");
-  const [steamCommission, setSteamCommission] = useState("20");
+  const [fulfillment, setFulfillment] = useState<"manual" | "automated">("automated");
+  const [steamCommission, setSteamCommission] = useState("10");
   const [steamUsdToRub, setSteamUsdToRub] = useState("92");
   const [steamKztToRub, setSteamKztToRub] = useState("0.2");
 
@@ -48,7 +50,11 @@ export default function NewProductPage() {
     const description = String(fd.get("description") || "");
     const price = Number(fd.get("price"));
     const old_price_raw = String(fd.get("old_price") || "").trim();
-    const fulfillment = String(fd.get("fulfillment"));
+    const fulfillmentValue = String(fd.get("fulfillment"));
+    const automated_delivery_urls =
+      fulfillmentValue === "automated"
+        ? parseDeliveryUrls(String(fd.get("automated_delivery_urls") || ""))
+        : [];
     const is_published = fd.get("is_published") === "on";
     const image_urls = String(fd.get("image_urls") || "")
       .split("\n")
@@ -89,9 +95,10 @@ export default function NewProductPage() {
           description,
           price,
           old_price: old_price_raw ? Number(old_price_raw) : null,
-          fulfillment,
+          fulfillment: fulfillmentValue,
+          automated_delivery_urls,
           product_type: productType,
-          steam_commission_percent: Number(steamCommission) || 20,
+          steam_commission_percent: Number(steamCommission) || 10,
           steam_usd_to_rub: Number(steamUsdToRub) || 92,
           steam_kzt_to_rub: Number(steamKztToRub) || 0.2,
           is_published,
@@ -170,12 +177,28 @@ export default function NewProductPage() {
             id="fulfillment"
             name="fulfillment"
             className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
-            defaultValue="automated"
+            value={fulfillment}
+            onChange={(e) => setFulfillment(e.target.value as "manual" | "automated")}
           >
             <option value="automated">Автоматически</option>
             <option value="manual">Ручная (10 мин — 6 ч)</option>
           </select>
         </div>
+        {fulfillment === "automated" ? (
+          <div className="space-y-2">
+            <Label htmlFor="automated_delivery_urls">Ссылки для покупателя после оплаты</Label>
+            <Textarea
+              id="automated_delivery_urls"
+              name="automated_delivery_urls"
+              rows={4}
+              placeholder={"https://example.com/link-1\nhttps://example.com/link-2"}
+            />
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              По одной ссылке в строке. Показываются на странице «Спасибо за покупку» после успешной
+              оплаты автоматического товара.
+            </p>
+          </div>
+        ) : null}
         <div className="flex items-start gap-2 rounded-lg border border-dashed px-3 py-2">
           <input
             type="checkbox"

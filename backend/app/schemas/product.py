@@ -63,7 +63,7 @@ class ProductCard(BaseModel):
 
 class ProductDetail(ProductCard):
     product_type: str = "standard"
-    steam_commission_percent: Decimal = Decimal("20")
+    steam_commission_percent: Decimal = Decimal("10")
     steam_usd_to_rub: Decimal = Decimal("92")
     steam_kzt_to_rub: Decimal = Decimal("0.2")
     input_fields: list[ProductInputFieldRead]
@@ -75,6 +75,7 @@ class ProductDetail(ProductCard):
     faq_sections: list[AccordionSection] = Field(default_factory=list)
     pricing_variants: list[PricingVariant] = Field(default_factory=list)
     post_payment_fields: list[ProductPostPaymentField] = Field(default_factory=list)
+    automated_delivery_urls: list[str] = Field(default_factory=list)
 
 
 class ProductInputFieldCreate(BaseModel):
@@ -93,7 +94,7 @@ class ProductCreate(BaseModel):
     price: Decimal
     old_price: Decimal | None = None
     product_type: str = Field(default="standard", pattern="^(standard|steam_topup)$")
-    steam_commission_percent: Decimal = Field(default=Decimal("20"), ge=0, le=100)
+    steam_commission_percent: Decimal = Field(default=Decimal("10"), ge=0, le=100)
     steam_usd_to_rub: Decimal = Field(default=Decimal("92"), gt=0)
     steam_kzt_to_rub: Decimal = Field(default=Decimal("0.2"), gt=0)
     fulfillment: str = Field(pattern="^(manual|automated)$")
@@ -107,6 +108,7 @@ class ProductCreate(BaseModel):
     faq_sections: list[AccordionSection] = Field(default_factory=list)
     pricing_variants: list[PricingVariant] = Field(default_factory=list)
     post_payment_fields: list[ProductInputFieldCreate] = Field(default_factory=list)
+    automated_delivery_urls: list[str] = Field(default_factory=list, max_length=20)
 
 
 class ProductUpdate(BaseModel):
@@ -130,6 +132,7 @@ class ProductUpdate(BaseModel):
     faq_sections: list[AccordionSection] | None = None
     pricing_variants: list[PricingVariant] | None = None
     post_payment_fields: list[ProductInputFieldCreate] | None = None
+    automated_delivery_urls: list[str] | None = Field(default=None, max_length=20)
 
 
 class HomepageSectionRead(BaseModel):
