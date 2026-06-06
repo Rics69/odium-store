@@ -2,7 +2,8 @@
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["npm ci"]
+
+cmds = ["NPM_CONFIG_PRODUCTION=false npm ci"]
 
 [phases.build]
 cmds = ["npm run build"]
@@ -11,5 +12,4 @@ cmds = ["npm run build"]
 cmd = "npm run start -- -H 0.0.0.0 -p ${PORT:-3000}"
 
 [variables]
-NODE_ENV = "production"
 NEXT_TELEMETRY_DISABLED = "1"
