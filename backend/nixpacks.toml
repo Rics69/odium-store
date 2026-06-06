@@ -1,11 +1,5 @@
 [phases.setup]
 nixPkgs = ["python311", "gcc"]
 
-[phases.install]
-cmds = [
-  "python -m pip install --upgrade pip",
-  "pip install --no-cache-dir -r requirements.txt"
-]
-
 [start]
-cmd = "bash -lc 'python -m alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}'"
+cmd = "bash -lc 'export PYTHONPATH=. && python -m alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}'"
