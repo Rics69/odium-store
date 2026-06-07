@@ -4,15 +4,22 @@ FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
+ARG NPM_REGISTRY=https://registry.npmmirror.com
+
 ENV NEXT_TELEMETRY_DISABLED=1 \
-    NPM_CONFIG_LOGLEVEL=info \
+    NPM_CONFIG_LOGLEVEL=warn \
+    NPM_CONFIG_REGISTRY=${NPM_REGISTRY} \
     NPM_CONFIG_FETCH_TIMEOUT=600000 \
-    NPM_CONFIG_FETCH_RETRIES=5
+    NPM_CONFIG_FETCH_RETRIES=10 \
+    NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=20000 \
+    NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT=120000
 
 COPY package.json package-lock.json ./
 
+# На VPS с медленным доступом к registry.npmjs.org установка 600+ пакетов
+# может занять 30-60 минут. Зеркало npm сильно ускоряет первую сборку.
 RUN --mount=type=cache,target=/root/.npm \
-    echo ">>> npm ci: start" \
+    echo ">>> npm ci: start (registry=${NPM_REGISTRY})" \
     && npm ci --no-audit --no-fund \
     && echo ">>> npm ci: done"
 
