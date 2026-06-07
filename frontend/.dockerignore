@@ -9,3 +9,8 @@ out
 npm-debug.log*
 .DS_Store
 nixpacks.toml
+tsconfig.tsbuildinfo
+.agents
+.cursor
+*.md
+!README.md
